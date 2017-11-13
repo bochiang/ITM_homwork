@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{e50712af-3bbf-4a4c-a25d-7f44530b4d2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{02fe1fbb-4ccc-4116-9985-73c55ee1d7ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\common\pixel.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\intraPrediction.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\interPrediction.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\commonstructs.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\common.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\aec.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\annexb.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\bbv.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\biaridecod.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\block.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\contributors.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\defines.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\elements.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\global.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\header.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\macroblock.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\memalloc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\transform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ldecod\inc\vlc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ldecod\src\AEC.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\bbv.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\biaridecod.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\bitstream.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\block.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\header.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\image.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\ldecod.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\loopfilter.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\macroblock.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\memalloc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\output.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\transform.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ldecod\src\vlc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\pixel.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\intraPrediction.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\interPrediction.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\commonstructs.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\common.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\block_const.c">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

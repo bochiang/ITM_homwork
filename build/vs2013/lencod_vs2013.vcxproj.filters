@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{c0f8ce33-cdf1-4cef-95fc-150b04d5a8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{f0f45d13-6402-4c8e-9346-73a549f16cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{b99e47cc-bcc4-4a42-9161-7795751861cd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lencod\inc\AEC.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\biariencode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\bitstream.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\block.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\configfile.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\contributors.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\ctx_tables.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\defines.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\fast_me.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\fuzzycontrol.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\global.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\golomb.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\header.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\image.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\loopfilter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\macroblock.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\memalloc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\mv-search.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\rdopt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\refbuf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\tdrdo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\transform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\vlc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\common.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\commonstructs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\pixel.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\intraPrediction.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\interPrediction.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\lencod\src\AEC.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\biariencode.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\bitstream.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\block.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\configfile.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\fast_me.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\fuzzycontrol.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\golomb.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\header.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\image.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\lencod.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\loopfilter.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\macroblock.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\memalloc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\mv-search.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\rdopt.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\rdopt_coding_state.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\refbuf.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\slice.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\tdrdo.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\transform.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\vlc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\block_const.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\common.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\commonstructs.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\pixel.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\interPrediction.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\intraPrediction.c">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\bin\encoder_ai.cfg" />
+    <None Include="..\..\bin\encoder_ldp.cfg" />
+    <None Include="..\..\bin\encoder_ra.cfg" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\common\common.h" />
+    <ClInclude Include="..\..\common\commonstructs.h" />
+    <ClInclude Include="..\..\common\interPrediction.h" />
+    <ClInclude Include="..\..\common\intraPrediction.h" />
+    <ClInclude Include="..\..\common\pixel.h" />
+    <ClInclude Include="..\..\lencod\inc\AEC.h" />
+    <ClInclude Include="..\..\lencod\inc\bbv.h" />
+    <ClInclude Include="..\..\lencod\inc\biariencode.h" />
+    <ClInclude Include="..\..\lencod\inc\bitstream.h" />
+    <ClInclude Include="..\..\lencod\inc\block.h" />
+    <ClInclude Include="..\..\lencod\inc\configfile.h" />
+    <ClInclude Include="..\..\lencod\inc\contributors.h" />
+    <ClInclude Include="..\..\lencod\inc\ctx_tables.h" />
+    <ClInclude Include="..\..\lencod\inc\defines.h" />
+    <ClInclude Include="..\..\lencod\inc\fast_me.h" />
+    <ClInclude Include="..\..\lencod\inc\fuzzycontrol.h" />
+    <ClInclude Include="..\..\lencod\inc\global.h" />
+    <ClInclude Include="..\..\lencod\inc\golomb.h" />
+    <ClInclude Include="..\..\lencod\inc\header.h" />
+    <ClInclude Include="..\..\lencod\inc\image.h" />
+    <ClInclude Include="..\..\lencod\inc\loopfilter.h" />
+    <ClInclude Include="..\..\lencod\inc\macroblock.h" />
+    <ClInclude Include="..\..\lencod\inc\memalloc.h" />
+    <ClInclude Include="..\..\lencod\inc\mv-search.h" />
+    <ClInclude Include="..\..\lencod\inc\rdopt.h" />
+    <ClInclude Include="..\..\lencod\inc\refbuf.h" />
+    <ClInclude Include="..\..\lencod\inc\tdrdo.h" />
+    <ClInclude Include="..\..\lencod\inc\transform.h" />
+    <ClInclude Include="..\..\lencod\inc\vlc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\common\block_const.c" />
+    <ClCompile Include="..\..\common\common.c" />
+    <ClCompile Include="..\..\common\commonstructs.c" />
+    <ClCompile Include="..\..\common\interPrediction.c" />
+    <ClCompile Include="..\..\common\intraPrediction.c" />
+    <ClCompile Include="..\..\common\pixel.c" />
+    <ClCompile Include="..\..\lencod\src\AEC.c" />
+    <ClCompile Include="..\..\lencod\src\bbv.c" />
+    <ClCompile Include="..\..\lencod\src\biariencode.c" />
+    <ClCompile Include="..\..\lencod\src\bitstream.c" />
+    <ClCompile Include="..\..\lencod\src\block.c" />
+    <ClCompile Include="..\..\lencod\src\configfile.c" />
+    <ClCompile Include="..\..\lencod\src\fast_me.c" />
+    <ClCompile Include="..\..\lencod\src\fuzzycontrol.c" />
+    <ClCompile Include="..\..\lencod\src\golomb.c" />
+    <ClCompile Include="..\..\lencod\src\header.c" />
+    <ClCompile Include="..\..\lencod\src\image.c" />
+    <ClCompile Include="..\..\lencod\src\lencod.c" />
+    <ClCompile Include="..\..\lencod\src\loopfilter.c" />
+    <ClCompile Include="..\..\lencod\src\macroblock.c" />
+    <ClCompile Include="..\..\lencod\src\memalloc.c" />
+    <ClCompile Include="..\..\lencod\src\mv-search.c" />
+    <ClCompile Include="..\..\lencod\src\rdopt.c" />
+    <ClCompile Include="..\..\lencod\src\rdopt_coding_state.c" />
+    <ClCompile Include="..\..\lencod\src\refbuf.c" />
+    <ClCompile Include="..\..\lencod\src\slice.c" />
+    <ClCompile Include="..\..\lencod\src\tdrdo.c" />
+    <ClCompile Include="..\..\lencod\src\transform.c" />
+    <ClCompile Include="..\..\lencod\src\vlc.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\bin\encoder_ai.cfg" />
+    <None Include="..\..\bin\encoder_ldp.cfg" />
+    <None Include="..\..\bin\encoder_ra.cfg" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D788A4FE-1F0A-4B40-AB12-CD59F81F9E6D}</ProjectGuid>
+    <RootNamespace>lencod</RootNamespace>
+    <ProjectName>lencod</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\bin\vs2010\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\vs2010\$(Platform)\$(Configuration)\$(RootNamespace)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\bin\vs2010\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\vs2010\$(Platform)\$(Configuration)\$(RootNamespace)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\..\bin\vs2010\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\vs2010\$(Platform)\$(Configuration)\$(RootNamespace)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\..\bin\vs2010\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\vs2010\$(Platform)\$(Configuration)\$(RootNamespace)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EmbedManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir)\..\lencod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir)\..\lencod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir)\..\lencod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir)\..\lencod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
