@@ -96,6 +96,9 @@
     <ClInclude Include="..\..\common\interPrediction.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lencod\inc\tz_search.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lencod\src\AEC.c">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="..\..\common\intraPrediction.c">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lencod\src\tz_search.c">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
