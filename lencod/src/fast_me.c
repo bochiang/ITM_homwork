@@ -2780,7 +2780,7 @@ int FastMotionSearchSym( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
 #if USING_TZ_SEARCH
     int i_mvc;
     int pmv[5][2] = { { 0 } };
-    i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
+    i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, ref, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
     pred_mv_x = pmv[0][0];
     pred_mv_y = pmv[0][1];
 
