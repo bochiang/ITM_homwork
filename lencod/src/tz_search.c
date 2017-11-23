@@ -210,7 +210,41 @@ int Get_mvc(ImgParams *img, Macroblock *currMB, int(*pmv)[2], int **refFrArr, in
         switch (mvPredType) {
         case MVPRED_xy_MIN:
             mv_c = block_available_up_right ? mv_c : mv_d;
+#if    1
+            if (((mv_a < 0) && (mv_b > 0) && (mv_c > 0)) || (mv_a > 0) && (mv_b < 0) && (mv_c < 0)) {
+                pmv[imvc][hv] = (mv_b + mv_c) / 2;
+                temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_b;
+            }
+            else if (((mv_b < 0) && (mv_a > 0) && (mv_c > 0)) || ((mv_b > 0) && (mv_a < 0) && (mv_c < 0))) {
+                pmv[imvc][hv] = (mv_c + mv_a) / 2;
+                temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_c;
+            }
+            else if (((mv_c < 0) && (mv_a > 0) && (mv_b > 0)) || ((mv_c > 0) && (mv_a < 0) && (mv_b < 0))) {
+                pmv[imvc][hv] = (mv_a + mv_b) / 2;
+                temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_a;
+            }
+            else {
+                diff_a = abs(mv_a - mv_b);
+                diff_b = abs(mv_b - mv_c);
+                diff_c = abs(mv_c - mv_a);
+                pred_vec = MIN(diff_a, MIN(diff_b, diff_c));
+
+                if (pred_vec == diff_a) {
+                    pmv[imvc][hv] = (mv_a + mv_b) / 2;
+                    temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_a;
+                }
+                else if (pred_vec == diff_b) {
+                    pmv[imvc][hv] = (mv_b + mv_c) / 2;
+                    temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_b;
+                }
+                else {
+                    pmv[imvc][hv] = (mv_c + mv_a) / 2;
+                    temp_pred_SAD[1] = temp_pred_SAD[0] = SAD_c;
+                }
+            }
+#else
             pmv[imvc][hv] = mid_value(mv_a, mv_b, mv_c);
+#endif
             break;
         case MVPRED_L:
             pmv[imvc][hv] = mv_a;
