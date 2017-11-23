@@ -24,6 +24,7 @@ estimation and fractional pel motion estimation
 #include "block.h"
 #include "../../common/interPrediction.h"
 #include "tz_search.h"
+
 extern  int   *byte_abs;
 extern  int   *mvbits;
 extern  int   *square_points_x;
@@ -492,14 +493,16 @@ int FastMVSeach( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, int mode
     int i_mvc;
     int pmv[5][2] = { { 0 } };
     i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
-    pred_mv_x = 0;
-    pred_mv_y = 0;
-    SetMotionVectorPredictorME(img, currMB, pred_mv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
-    pred_mv_x = pred_mv[0];
-    pred_mv_y = pred_mv[1];
+    pred_mv_x = pmv[0][0];
+    pred_mv_y = pmv[0][1];
+
+    // integer-pel search
     mv_x = pred_mv_x / 4;
     mv_y = pred_mv_y / 4;
+    min_mcost = Tz_Search(orig_val, stride, ref, center_x, center_y, mode,
+        pmv, i_mvc, &mv_x, &mv_y, min_mcost);
 #else
+    min_mcost = max_value;
     // get motion mv predictor
     SetMotionVectorPredictorME( img, currMB, pred_mv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref );
     pred_mv_x = pred_mv[0];

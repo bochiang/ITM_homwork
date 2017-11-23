@@ -1,5 +1,55 @@
 #include "global.h"
 #include "fast_me.h"
+#include "defines.h"
+#include <math.h>
+#include <stdint.h>
+
+int*   mvbits;
+int*   refbits;
+int*   byte_abs;
+
+#define MAKEDWORD(mx, my)     (((my) << 16) | ((mx) & 0xFFFF))
+#define TZ_MIN(a, b)       ((a) < (b)? (a) : (b))
+#define TZ_MAX(a, b)       ((a) > (b)? (a) : (b))
+
+#define SEARCH_ONE_PIXEL_X4_TZ(dist, dir)                                                                                         \
+    if(abs(cand_x - center_x) <=search_range && abs(cand_y - center_y)<= search_range) {                         \
+        if(!McostState[cand_y-center_y+search_range][cand_x-center_x+search_range]) {                            \
+            mcost = MV_COST (lambda_factor, mvshift, cand_x, cand_y, pred_x, pred_y);                            \
+            if (ref != -1) {                                                                                     \
+                mcost += REF_COST(lambda_factor, ref);                                                           \
+            }                                                                                                    \
+            mcost = PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
+            McostState[cand_y-center_y+search_range][cand_x-center_x+search_range] = mcost;                      \
+            if (mvinfo.bcost > mcost) {                                                                             \
+                mvinfo.bdist = dist;                                                                                 \
+                mvinfo.bdir = dir;                                                                                 \
+                mvinfo.bcost = mcost;                                                                               \
+                best_x = cand_x;                                                                                 \
+                best_y = cand_y;                                                                                 \
+            }                                                                                                    \
+        }                                                                                                        \
+    }
+
+#define TZ_SEARCH_ONE_PIXEL                                                                                         \
+    if(abs(cand_x - center_x) <=search_range && abs(cand_y - center_y)<= search_range) {                         \
+        mcost = MV_COST (lambda_factor, mvshift, cand_x, cand_y, pred_x, pred_y);                            \
+        if (ref != -1) {                                                                                     \
+            mcost += REF_COST(lambda_factor, ref);                                                           \
+        }                                                                                                    \
+        mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
+        McostState[cand_y-center_y+search_range][cand_x-center_x+search_range] = mcost;                      \
+        if (mcost < min_mcost) {                                                                             \
+            best_x = cand_x;                                                                                 \
+            best_y = cand_y;                                                                                 \
+            min_mcost = mcost;                                                                               \
+        }                                                                                                    \
+    }
+typedef struct mv_info {
+    int     bdir;               /* best direction */
+    int64_t  bcost;              /* best cost      */
+    int     bdist;              /* best distance  */
+} mv_info;
 
 int mid_value(int a, int b, int c)
 {
@@ -29,7 +79,7 @@ int Get_mvc(ImgParams *img, Macroblock *currMB, int(*pmv)[2], int **refFrArr, in
     int mb_available_up_right = (img->mb_x >= mb_width - 1 || img->mb_y == 0) ? 0 : (img->mb_data[mb_nr].slice_nr == img->mb_data[mb_nr - mb_width + 1].slice_nr);
     int block_available_up, block_available_left, block_available_up_right, block_available_up_left;
     int mv_a, mv_b, mv_c, mv_d, pred_vec = 0;
-    int rFrameL, rFrameU, rFrameUR, rFrameUL;
+    int mvPredType, rFrameL, rFrameU, rFrameUR, rFrameUL;
     int hv, diff_a, diff_b, diff_c;
 
     int SAD_a, SAD_b, SAD_c, SAD_d;
@@ -79,19 +129,42 @@ int Get_mvc(ImgParams *img, Macroblock *currMB, int(*pmv)[2], int **refFrArr, in
     rFrameUL = block_available_up_left ? refFrArr[pu_b8_y - 1][pu_b8_x - 1] : -1;
 
     imvc = 0;
-    if((rFrameL != -1) && (rFrameU != -1) && (rFrameUR != -1))
-    {
-        for (hv = 0; hv < 2; hv++) {
-            mv_a = block_available_left ? tmp_mv[pu_b8_y - 0][4 + pu_b8_x - 1][hv] : 0;
-            mv_b = block_available_up ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x][hv] : 0;
-            mv_d = block_available_up_left ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x - 1][hv] : 0;
-            mv_c = block_available_up_right ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x + (bsize_x >> 3)][hv] : mv_d;
-
-            mv_c = block_available_up_right ? mv_c : mv_d;
-            pmv[0][hv] = mid_value(mv_a, mv_b, mv_c);
-        }
-        imvc ++;
+    mvPredType = MVPRED_xy_MIN;
+    if ((rFrameL != -1) && (rFrameU == -1) && (rFrameUR == -1)) {
+        mvPredType = MVPRED_L;
     }
+    else if ((rFrameL == -1) && (rFrameU != -1) && (rFrameUR == -1)) {
+        mvPredType = MVPRED_U;
+    }
+    else if ((rFrameL == -1) && (rFrameU == -1) && (rFrameUR != -1)) {
+        mvPredType = MVPRED_UR;
+    }
+
+    for (hv = 0; hv < 2; hv++) {
+        mv_a = block_available_left ? tmp_mv[pu_b8_y - 0][4 + pu_b8_x - 1][hv] : 0;
+        mv_b = block_available_up ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x][hv] : 0;
+        mv_d = block_available_up_left ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x - 1][hv] : 0;
+        mv_c = block_available_up_right ? tmp_mv[pu_b8_y - 1][4 + pu_b8_x + (bsize_x >> 3)][hv] : mv_d;
+
+        switch (mvPredType) {
+        case MVPRED_xy_MIN:
+            mv_c = block_available_up_right ? mv_c : mv_d;
+            pmv[imvc][hv] = mid_value(mv_a, mv_b, mv_c);
+            break;
+        case MVPRED_L:
+            pmv[imvc][hv] = mv_a;
+            break;
+        case MVPRED_U:
+            pmv[imvc][hv] = mv_b;
+            break;
+        case MVPRED_UR:
+            pmv[imvc][hv] = mv_c;
+            break;
+        default:
+            break;
+        }
+    }
+    imvc++;
     if(rFrameL != -1)
     {
         pmv[imvc][0] = block_available_left ? tmp_mv[pu_b8_y - 0][4 + pu_b8_x - 1][0] : 0;
@@ -119,6 +192,34 @@ int Get_mvc(ImgParams *img, Macroblock *currMB, int(*pmv)[2], int **refFrArr, in
     return imvc;
 }
 
+_inline int Tz_PartCalMad( pel_t *ref_pic,pel_t* orig_val, int stride, pel_t *( *get_ref_line )( int, pel_t*, int, int ), int mode, int mcost, int min_mcost, int cand_x, int cand_y )
+{
+    int y, x4, index_pos = 0;
+    int blocksize_y   = ( blc_size[mode][1] << 3 );
+    int blocksize_x   = ( blc_size[mode][0] << 3 );
+    int blocksize_x4 = blocksize_x >> 2;
+    pel_t *orig_line, *ref_line;
+    for ( y = 0; y < blocksize_y; y++ )
+    {
+        ref_line  = get_ref_line( blocksize_x, ref_pic, cand_y + y, cand_x );
+        index_pos = y * stride;
+        orig_line = orig_val + index_pos;
+
+        for ( x4 = 0; x4 < blocksize_x4; x4++ )
+        {
+            mcost += byte_abs[ *orig_line++ - *ref_line++ ];
+            mcost += byte_abs[ *orig_line++ - *ref_line++ ];
+            mcost += byte_abs[ *orig_line++ - *ref_line++ ];
+            mcost += byte_abs[ *orig_line++ - *ref_line++ ];
+        }
+        if ( mcost >= min_mcost )
+        {
+            break;
+        }
+    }
+    return mcost;
+}
+
 int                                     //  ==> minimum motion cost after search
 Tz_Search(pel_t*   orig_val,    // <--  not used
     int       stride,
@@ -132,5 +233,253 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     int      *mv_y,         //  --> motion vector (y) - in pel units
     int       min_mcost)   // <--  minimum motion cost (cost for center or huge value)
 {
+    static int cross_points_x[4] = { 0, 1, 0, -1 };
+    static int cross_points_y[4] = { -1, 0, 1, 0 };
+    static int square_points_x[4] = { -1, 1, 1, -1 };
+    static int square_points_y[4] = { -1, -1, 1, 1 };
 
+    int   pos, cand_x, cand_y, mcost;
+    int   search_range = input->search_range;
+    pel_t *(*get_ref_line)(int, pel_t *, int, int);
+    pel_t  *ref_pic = img->type == B_IMG ? Refbuf11[ref + 1] : Refbuf11[ref];
+    int   lambda_factor = LAMBDA_FACTOR(sqrt(img->lambda));               // factor for determining lagragian motion cost
+    int   mvshift = 2;                  // motion vector shift for getting sub-pel units
+    int   pred_x = (pic_pix_x << mvshift) + mvc[0][0];     // position x (in sub-pel units)
+    int   pred_y = (pic_pix_y << mvshift) + mvc[0][1];     // position y (in sub-pel units)
+    int   center_x = pic_pix_x + mvc[0][0] / 4;                        // center position x (in pel units)
+    int   center_y = pic_pix_y + mvc[0][1] / 4;                        // center position y (in pel units)
+    int    best_x = 0, best_y = 0;
+    int   search_step, iYMinNow, iXMinNow;
+    int   i, j, m, iSADLayer;
+    int   height = img->height;
+    /* mvc[0][] is the MVP */
+    // set function for getting reference picture lines
+    if ((center_x > search_range) && (center_x < img->width - 1 - search_range - (blc_size[mode][0] << 3)) &&
+        (center_y > search_range) && (center_y < height - 1 - search_range - (blc_size[mode][1] << 3))) {
+        get_ref_line = FastLineX;
+    }
+    else {
+        get_ref_line = UMVLineX;
+    }
+    cand_x = center_x;
+    cand_y = center_y;
+    mcost = MV_COST(lambda_factor, mvshift, cand_x, cand_y, pred_x, pred_y);
+    if (ref != -1) {
+        mcost += REF_COST(lambda_factor, ref);
+    }
+    int i_mvc_start = 1;
+    mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y);
+    McostState[search_range][search_range] = mcost;
+    if (mcost < min_mcost) {
+        min_mcost = mcost;
+        best_x = cand_x;
+        best_y = cand_y;
+    }
+
+    iXMinNow = best_x;
+    iYMinNow = best_y;
+    for (m = 0; m < 4; m++) {
+        cand_x = iXMinNow + cross_points_x[m];
+        cand_y = iYMinNow + cross_points_y[m];
+        TZ_SEARCH_ONE_PIXEL
+    }
+
+    if (center_x != pic_pix_x || center_y != pic_pix_y) {
+        cand_x = pic_pix_x;
+        cand_y = pic_pix_y;
+        TZ_SEARCH_ONE_PIXEL
+
+        iXMinNow = cand_x;
+        iYMinNow = cand_y;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m];
+            cand_y = iYMinNow + cross_points_y[m];
+            TZ_SEARCH_ONE_PIXEL
+        }
+    }
+
+    for (i = i_mvc_start; i < i_mvc; i++) {
+        cand_x = pic_pix_x + mvc[i][0] / 4;
+        cand_y = pic_pix_y + mvc[i][1] / 4;
+        TZ_SEARCH_ONE_PIXEL
+    }
+    /* 当前最优MV不是 MVP，搜索其周围一个小窗口 */
+    if (MAKEDWORD(center_x - pic_pix_x, center_y - pic_pix_y) != MAKEDWORD(best_x - pic_pix_x, best_y - pic_pix_y)) {
+        iXMinNow = best_x;
+        iYMinNow = best_y;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m];
+            cand_y = iYMinNow + cross_points_y[m];
+            TZ_SEARCH_ONE_PIXEL
+        }
+    }
+
+    /* TZ search step2 */
+    const int RasterDistance = 16;
+    const int EarlyExitIters = 3;
+    int bdist, dir;
+    mv_info mvinfo;
+    int tz_iters = 0;
+    int i_dist;
+
+    mvinfo.bcost = min_mcost;
+    mvinfo.bdist = 0;
+    mvinfo.bdir = 0;
+
+    /* direction */
+    /*     2     */
+    /*   4 * 5   */
+    /*     7     */
+
+    iXMinNow = best_x;
+    iYMinNow = best_y;
+    for (m = 0; m < 4; m++) {
+        cand_x = iXMinNow + cross_points_x[m];
+        cand_y = iYMinNow + cross_points_y[m];
+        SEARCH_ONE_PIXEL_X4_TZ(i_dist, 0)
+    }
+    if (mvinfo.bcost < min_mcost) {
+        tz_iters = 0;
+    }
+    else {
+        ++tz_iters;
+    }
+    for (i_dist = 2; i_dist <= search_range; i_dist <<= 1) {
+        /*          2           points 2, 4, 5, 7 are i_dist
+        *        1   3         points 1, 3, 6, 8 are i_dist/2
+        *      4   *   5
+        *        6   8
+        *          7           */
+        int i_dist2 = i_dist >> 1;
+        iXMinNow = best_x;
+        iYMinNow = best_y;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m] * i_dist2;
+            cand_y = iYMinNow + cross_points_y[m] * i_dist2;
+            SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 1)
+            cand_x = iXMinNow + cross_points_x[m] * i_dist;
+            cand_y = iYMinNow + cross_points_y[m] * i_dist;
+            SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 2)
+        }
+        if (mvinfo.bcost < min_mcost) {
+            tz_iters = 0;
+        }
+        else if (++tz_iters >= EarlyExitIters) {
+            break;
+        }
+    }
+    min_mcost = mvinfo.bcost;
+    bdist = mvinfo.bdist;
+    dir = mvinfo.bdir;
+
+    if (bdist == 1) {
+        if (!dir) {
+            goto end;
+        }
+        else {
+            goto step_3;
+        }
+    }
+    /* raster search refinement if original search distance was too big */
+    if (bdist > RasterDistance) {
+        const int iRasterDist = RasterDistance >> 1;
+        const int iRasterDist2 = RasterDistance >> 2;
+        int rmv_y_min = best_y - RasterDistance + 2;
+        int rmv_y_max = best_y + RasterDistance - 2;
+        int rmv_x_min = best_x - RasterDistance + 2;
+        int rmv_x_max = best_x + RasterDistance - 2;
+        for (j = rmv_y_min; j < rmv_y_max; j += iRasterDist2) {
+            for (i = rmv_x_min; i < rmv_x_max; i += iRasterDist2) {
+                cand_x = i;
+                cand_y = j;
+                SEARCH_ONE_PIXEL
+            }
+        }
+        bdist = iRasterDist;
+    }
+    else {
+        bdist = mvinfo.bdist;
+    }
+
+    mvinfo.bcost = min_mcost;
+    mvinfo.bdist = 0;
+    mvinfo.bdir = 0;
+
+    /* raster refinement */
+    for (i_dist = bdist >> 1; i_dist > 1; i_dist >>= 1) {
+        int i_dist2 = i_dist >> 1;
+        iXMinNow = best_x;
+        iYMinNow = best_y;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m] * i_dist2;
+            cand_y = iYMinNow + cross_points_y[m] * i_dist2;
+            SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 1)
+            cand_x = iXMinNow + cross_points_x[m] * i_dist;
+            cand_y = iYMinNow + cross_points_y[m] * i_dist;
+            SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 2)
+        }
+    }
+    iXMinNow = best_x;
+    iYMinNow = best_y;
+    for (m = 0; m < 4; m++) {
+        cand_x = iXMinNow + cross_points_x[m];
+        cand_y = iYMinNow + cross_points_y[m];
+        SEARCH_ONE_PIXEL_X4_TZ(1, m + 2)
+    }
+
+    /* star refinement */
+    if (mvinfo.bdist > 0) {
+        iXMinNow = best_x;
+        iYMinNow = best_y;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m];
+            cand_y = iYMinNow + cross_points_y[m];
+            SEARCH_ONE_PIXEL_X4_TZ(1, m + 2)
+        }
+        for (i_dist = 2; i_dist <= 8; i_dist <<= 1) {
+            int i_dist2 = i_dist >> 1;
+            iXMinNow = best_x;
+            iYMinNow = best_y;
+            for (m = 0; m < 4; m++) {
+                cand_x = iXMinNow + cross_points_x[m] * i_dist2;
+                cand_y = iYMinNow + cross_points_y[m] * i_dist2;
+                SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 1)
+                    cand_x = iXMinNow + cross_points_x[m] * i_dist;
+                cand_y = iYMinNow + cross_points_y[m] * i_dist;
+                SEARCH_ONE_PIXEL_X4_TZ(i_dist, m + 2)
+            }
+        }
+    }
+
+    min_mcost = mvinfo.bcost;
+    bdist = mvinfo.bdist;
+    dir = mvinfo.bdir;
+
+    if (bdist == 1 && !dir) {
+        goto end;
+    }
+
+    int iAbort = 0;
+step_3: //the third step with a small search pattern
+    iXMinNow = best_x;
+    iYMinNow = best_y;
+    for (i = 0; i < search_range; i++) {
+        iSADLayer = 65536;
+        iAbort = 1;
+        for (m = 0; m < 4; m++) {
+            cand_x = iXMinNow + cross_points_x[m];
+            cand_y = iYMinNow + cross_points_y[m];
+            SEARCH_ONE_PIXEL1(0)
+        }
+        if (iAbort) {
+            break;
+        }
+        iXMinNow = best_x;
+        iYMinNow = best_y;
+    }
+
+end:
+    *mv_x = best_x - pic_pix_x;
+    *mv_y = best_y - pic_pix_y;
+    return min_mcost;
 }
