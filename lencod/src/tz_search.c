@@ -19,7 +19,6 @@ int*   byte_abs;
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
         mcost = PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
-        McostState[cand_y-center_y+search_range][cand_x-center_x+search_range] = mcost;                      \
         if (mvinfo.bcost > mcost) {                                                                             \
             mvinfo.bdist = dist;                                                                                 \
             mvinfo.bdir = dir;                                                                                 \
@@ -36,13 +35,28 @@ int*   byte_abs;
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
         mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
-        McostState[cand_y-center_y+search_range][cand_x-center_x+search_range] = mcost;                      \
         if (mcost < min_mcost) {                                                                             \
             best_x = cand_x;                                                                                 \
             best_y = cand_y;                                                                                 \
             min_mcost = mcost;                                                                               \
         }                                                                                                    \
     }
+
+#define TZ_SEARCH_ONE_PIXEL1(value_iAbort)                                                                          \
+    if(abs(cand_x - center_x) <=search_range && abs(cand_y - center_y)<= search_range){                          \
+        mcost = MV_COST (lambda_factor, mvshift, cand_x, cand_y, pred_x, pred_y);                            \
+        if (ref != -1) {                                                                                     \
+            mcost += REF_COST(lambda_factor, ref);                                                           \
+        }                                                                                                    \
+        mcost = PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
+        if (mcost < min_mcost) {                                                                             \
+            best_x = cand_x;                                                                                 \
+            best_y = cand_y;                                                                                 \
+            min_mcost = mcost;                                                                               \
+            iAbort = value_iAbort;                                                                           \
+        }                                                                                                    \
+    }
+
 typedef struct mv_info {
     int     bdir;               /* best direction */
     int64_t  bcost;              /* best cost      */
@@ -248,7 +262,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     int   center_y = pic_pix_y + mvc[0][1] / 4;                        // center position y (in pel units)
     int    best_x = 0, best_y = 0;
     int   search_step, iYMinNow, iXMinNow;
-    int   i, j, m, iSADLayer;
+    int   i, j, m;
     int   height = img->height;
     /* mvc[0][] is the MVP */
     // set function for getting reference picture lines
@@ -371,12 +385,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     dir = mvinfo.bdir;
 
     if (bdist == 1) {
-        if (!dir) {
-            goto end;
-        }
-        else {
-            goto step_3;
-        }
+        goto step_3;
     }
     /* raster search refinement if original search distance was too big */
     if (bdist > RasterDistance) {
@@ -453,21 +462,16 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     bdist = mvinfo.bdist;
     dir = mvinfo.bdir;
 
-    if (bdist == 1 && !dir) {
-        goto end;
-    }
-
     int iAbort = 0;
 step_3: //the third step with a small search pattern
     iXMinNow = best_x;
     iYMinNow = best_y;
     for (i = 0; i < search_range; i++) {
-        iSADLayer = 65536;
         iAbort = 1;
         for (m = 0; m < 4; m++) {
             cand_x = iXMinNow + cross_points_x[m];
             cand_y = iYMinNow + cross_points_y[m];
-            SEARCH_ONE_PIXEL1(0)
+            TZ_SEARCH_ONE_PIXEL1(0)
         }
         if (iAbort) {
             break;
@@ -476,7 +480,6 @@ step_3: //the third step with a small search pattern
         iYMinNow = best_y;
     }
 
-end:
     *mv_x = best_x - pic_pix_x;
     *mv_y = best_y - pic_pix_y;
     return min_mcost;
