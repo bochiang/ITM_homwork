@@ -66,7 +66,7 @@ static pel_t(*Fw_PelY_14) (pel_t*, int, int);
         if (ref != -1) {                                                                                                                                              \
             mcost += REF_COST(lambda_factor, ref);                                                                                                                    \
         }                                                                                                                                                             \
-        mcost = MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y);\
+        mcost = TZ_MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y);\
         McostState[cand_y-center_y+search_range][cand_x-center_x+search_range] = mcost;                                                                               \
         if (mcost < min_mcost) {                                                                                                                                      \
             best_x = cand_x;                                                                                                                                          \
@@ -81,7 +81,7 @@ static pel_t(*Fw_PelY_14) (pel_t*, int, int);
         if (ref != -1) {                                                                                     \
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
-        mcost = MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y); \
+        mcost = TZ_MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y); \
         if (mvinfo.bcost > mcost) {                                                                             \
             mvinfo.bdist = dist;                                                                                 \
             mvinfo.bdir = dir;                                                                                 \
@@ -97,7 +97,7 @@ static pel_t(*Fw_PelY_14) (pel_t*, int, int);
         if (ref != -1) {                                                                                     \
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
-        mcost = MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y); \
+        mcost = TZ_MHMC_PartCalMad(ref_pic,fw_ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y, pic_pix_x, pic_pix_y, *fw_mv_x, *fw_mv_y); \
         if (mcost < min_mcost) {                                                                             \
             best_x = cand_x;                                                                                 \
             best_y = cand_y;                                                                                 \
@@ -648,7 +648,7 @@ Tz_SearchMhp(pel_t*   orig_val,    // <--  not used
         cand_y = pic_pix_y;
         TZ_MHMC_SEARCH_ONE_PIXEL
 
-            iXMinNow = cand_x;
+        iXMinNow = cand_x;
         iYMinNow = cand_y;
         for (m = 0; m < 4; m++) {
             cand_x = iXMinNow + cross_points_x[m];

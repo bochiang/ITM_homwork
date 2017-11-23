@@ -674,7 +674,31 @@ int FastMotionSearchMhp( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
         pred_MV_ref[1] = all_mincost[mb_b4_x + b8_x_in_mb][mb_b4_y + b8_y_in_mb][( refframe )][mode][2];
         pred_MV_ref[1] = ( int )( pred_MV_ref[1] * ( refframe + 1 ) / ( float )( refframe ) );
     }
+#if USING_TZ_SEARCH
+    int i_mvc;
+    int pmv[5][2] = { { 0 } };
+    i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
+    pred_mv_x = pmv[0][0];
+    pred_mv_y = pmv[0][1];
+    bi_pred_mv_x = pred_mv_x;
+    bi_pred_mv_y = pred_mv_y;
+    bi_mv_x = pred_mv_x;
+    bi_mv_y = pred_mv_y;
 
+    for (i = 0; i < blk_step_x; i++) {
+        for (j = 0; j < blk_step_y; j++) {
+            bmv_mph[refframe][mode][b8_y_in_mb + j][b8_x_in_mb + i][0] = bi_mv_x;
+            bmv_mph[refframe][mode][b8_y_in_mb + j][b8_x_in_mb + i][1] = bi_mv_y;
+        }
+    }
+
+    // integer-pel search
+    mv_x = pred_mv_x / 4;
+    mv_y = pred_mv_y / 4;
+
+    min_mcost = Tz_SearchMhp(orig_val, stride, ref, center_x, center_y, mode,
+        pmv, i_mvc, &mv_x, &mv_y, &bi_mv_x, &bi_mv_y, min_mcost);
+#else
     //get motion mv predictor
     SetMotionVectorPredictorME( img, currMB, pred_mv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref );
 
@@ -701,7 +725,7 @@ int FastMotionSearchMhp( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
     min_mcost = FastIntegerMVSearchMhp( orig_val,stride, ref, center_x, center_y, mode,
                 pred_mv_x, pred_mv_y, &mv_x, &mv_y, &bi_mv_x, &bi_mv_y, min_mcost );
 
-
+#endif
     for ( i = 0; i < b4_step_x; i++ )
     {
         for ( j = 0; j < b4_step_y; j++ )
@@ -2753,6 +2777,19 @@ int FastMotionSearchSym( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
         pred_MV_ref[1] = ( int )( all_bwmincost[mb_b4_x + b8_x_in_mb][mb_b4_y + b8_y_in_mb][0][mode][2] * ( -n_Bframe ) / ( N_Bframe - n_Bframe + 1.0f ) );
     }
 
+#if USING_TZ_SEARCH
+    int i_mvc;
+    int pmv[5][2] = { { 0 } };
+    i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
+    pred_mv_x = pmv[0][0];
+    pred_mv_y = pmv[0][1];
+
+    // integer-pel search
+    mv_x = pred_mv_x / 4;
+    mv_y = pred_mv_y / 4;
+    min_mcost = Tz_Search(orig_val, stride, ref, center_x, center_y, mode,
+        pmv, i_mvc, &mv_x, &mv_y, min_mcost);
+#else
     // get mv predictor
     SetMotionVectorPredictorME( img, currMB, pred_mv, ref_array, mv_array, ref, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref );
     pred_mv_x = pred_mv[0];
@@ -2764,7 +2801,7 @@ int FastMotionSearchSym( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
 
     min_mcost = FastIntegerMVSearch( orig_val,stride, ref, center_x, center_y,/*pic_pix_x, pic_pix_y,*/ mode,
                 pred_mv_x, pred_mv_y, &mv_x, &mv_y, min_mcost );
-
+#endif
     for ( i = 0; i < b4_step_x; i++ )
     {
         for ( j = 0; j < b4_step_y; j++ )
