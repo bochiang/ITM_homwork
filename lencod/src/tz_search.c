@@ -21,7 +21,7 @@ static pel_t(*Fw_PelY_14) (pel_t*, int, int);
         if (ref != -1) {                                                                                     \
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
-        mcost = PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
+        mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
         if (mvinfo.bcost > mcost) {                                                                             \
             mvinfo.bdist = dist;                                                                                 \
             mvinfo.bdir = dir;                                                                                 \
@@ -51,7 +51,7 @@ static pel_t(*Fw_PelY_14) (pel_t*, int, int);
         if (ref != -1) {                                                                                     \
             mcost += REF_COST(lambda_factor, ref);                                                           \
         }                                                                                                    \
-        mcost = PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
+        mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y); \
         if (mcost < min_mcost) {                                                                             \
             best_x = cand_x;                                                                                 \
             best_y = cand_y;                                                                                 \
@@ -393,7 +393,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     }
     int i_mvc_start = 1;
     mcost = Tz_PartCalMad(ref_pic, orig_val, stride, get_ref_line, mode, mcost, min_mcost, cand_x, cand_y);
-    McostState[search_range][search_range] = mcost;
+    //McostState[search_range][search_range] = mcost;
     if (mcost < min_mcost) {
         min_mcost = mcost;
         best_x = cand_x;
@@ -413,12 +413,14 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
         cand_y = pic_pix_y;
         TZ_SEARCH_ONE_PIXEL
 
-        iXMinNow = cand_x;
-        iYMinNow = cand_y;
-        for (m = 0; m < 4; m++) {
-            cand_x = iXMinNow + cross_points_x[m];
-            cand_y = iYMinNow + cross_points_y[m];
-            TZ_SEARCH_ONE_PIXEL
+        if (best_x != center_x || best_y != center_y) {
+            iXMinNow = cand_x;
+            iYMinNow = cand_y;
+            for (m = 0; m < 4; m++) {
+                cand_x = iXMinNow + cross_points_x[m];
+                cand_y = iYMinNow + cross_points_y[m];
+                TZ_SEARCH_ONE_PIXEL
+            }
         }
     }
 
@@ -468,6 +470,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     else {
         ++tz_iters;
     }
+
     for (i_dist = 2; i_dist <= search_range; i_dist <<= 1) {
         /*          2           points 2, 4, 5, 7 are i_dist
         *        1   3         points 1, 3, 6, 8 are i_dist/2
@@ -480,7 +483,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
         for (m = 0; m < 4; m++) {
             cand_x = iXMinNow + square_points_x[m] * i_dist2;
             cand_y = iYMinNow + square_points_y[m] * i_dist2;
-            TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 1)
+            TZ_SEARCH_ONE_PIXEL_X4(i_dist2, m + 1)
             cand_x = iXMinNow + cross_points_x[m] * i_dist;
             cand_y = iYMinNow + cross_points_y[m] * i_dist;
             TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 2)
@@ -503,14 +506,14 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
     if (bdist > RasterDistance) {
         const int iRasterDist = RasterDistance >> 1;
         const int iRasterDist2 = RasterDistance >> 2;
-        int rmv_y_min = best_y - RasterDistance + 2;
-        int rmv_y_max = best_y + RasterDistance - 2;
-        int rmv_x_min = best_x - RasterDistance + 2;
-        int rmv_x_max = best_x + RasterDistance - 2;
+        int rmv_y_min = -search_range;
+        int rmv_y_max = search_range;
+        int rmv_x_min = -search_range;
+        int rmv_x_max = search_range;
         for (j = rmv_y_min; j < rmv_y_max; j += iRasterDist2) {
             for (i = rmv_x_min; i < rmv_x_max; i += iRasterDist2) {
-                cand_x = i;
-                cand_y = j;
+                cand_x = i + pic_pix_x;
+                cand_y = j + pic_pix_y;
                 TZ_SEARCH_ONE_PIXEL
             }
         }
@@ -532,7 +535,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
         for (m = 0; m < 4; m++) {
             cand_x = iXMinNow + square_points_x[m] * i_dist2;
             cand_y = iYMinNow + square_points_y[m] * i_dist2;
-            TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 1)
+            TZ_SEARCH_ONE_PIXEL_X4(i_dist2, m + 1)
             cand_x = iXMinNow + cross_points_x[m] * i_dist;
             cand_y = iYMinNow + cross_points_y[m] * i_dist;
             TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 2)
@@ -562,7 +565,7 @@ Tz_Search(pel_t*   orig_val,    // <--  not used
             for (m = 0; m < 4; m++) {
                 cand_x = iXMinNow + square_points_x[m] * i_dist2;
                 cand_y = iYMinNow + square_points_y[m] * i_dist2;
-                TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 1)
+                TZ_SEARCH_ONE_PIXEL_X4(i_dist2, m + 1)
                 cand_x = iXMinNow + cross_points_x[m] * i_dist;
                 cand_y = iYMinNow + cross_points_y[m] * i_dist;
                 TZ_SEARCH_ONE_PIXEL_X4(i_dist, m + 2)

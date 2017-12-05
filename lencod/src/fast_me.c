@@ -674,7 +674,7 @@ int FastMotionSearchMhp( Macroblock *currMB, int ref, int pu_b8_x, int pu_b8_y, 
         pred_MV_ref[1] = all_mincost[mb_b4_x + b8_x_in_mb][mb_b4_y + b8_y_in_mb][( refframe )][mode][2];
         pred_MV_ref[1] = ( int )( pred_MV_ref[1] * ( refframe + 1 ) / ( float )( refframe ) );
     }
-#if USING_TZ_SEARCH
+#if USING_TZ_SEARCH & 0
     int i_mvc;
     int pmv[5][2] = { { 0 } };
     i_mvc = Get_mvc(img, currMB, pmv, ref_array, mv_array, refframe, pu_pix_x_in_mb, pu_pix_y_in_mb, pu_bsize_x, mode, ref);
