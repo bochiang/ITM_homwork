@@ -23,6 +23,7 @@
     <ClInclude Include="..\..\common\commonstructs.h" />
     <ClInclude Include="..\..\common\interPrediction.h" />
     <ClInclude Include="..\..\common\intraPrediction.h" />
+    <ClInclude Include="..\..\common\intra_add.h" />
     <ClInclude Include="..\..\common\pixel.h" />
     <ClInclude Include="..\..\lencod\inc\AEC.h" />
     <ClInclude Include="..\..\lencod\inc\biariencode.h" />
@@ -54,6 +55,7 @@
     <ClCompile Include="..\..\common\commonstructs.c" />
     <ClCompile Include="..\..\common\interPrediction.c" />
     <ClCompile Include="..\..\common\intraPrediction.c" />
+    <ClCompile Include="..\..\common\intra_add.c" />
     <ClCompile Include="..\..\common\pixel.c" />
     <ClCompile Include="..\..\lencod\src\AEC.c" />
     <ClCompile Include="..\..\lencod\src\biariencode.c" />
@@ -87,13 +89,14 @@
     <ProjectGuid>{D788A4FE-1F0A-4B40-AB12-CD59F81F9E6D}</ProjectGuid>
     <RootNamespace>lencod</RootNamespace>
     <ProjectName>lencod</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -105,7 +108,7 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

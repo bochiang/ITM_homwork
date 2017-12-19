@@ -130,6 +130,12 @@ int EncodeIntraLumaBlk( Macroblock *currMB, CSobj *cs_aec, int b8, int b4, int *
     {
         pred_flag[DOWN_LEFT_PRED] = 0;
         pred_flag[DOWN_RIGHT_PRED] = 0;
+#if USING_INTRA_5_9
+        pred_flag[INTRA_BILINEAR] = 0;
+        pred_flag[INTRA_PLANE] = 0;
+        pred_flag[INTRA_XY16] = 0;
+        pred_flag[INTRA_XY20] = 0;
+#endif
     }
 
     predblk = img->pred_blk_luma + pu_y_in_cu*MB_SIZE + pu_x_in_cu;

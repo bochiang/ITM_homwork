@@ -3,6 +3,7 @@
 
 #define ITM         "17.0"
 #define VERSION     "201705"
+#include "intra_add.h"
 
 #define TRACE 0
 #if TRACE
@@ -135,6 +136,12 @@ enum IntraPredModeLuma
     DC_PRED,
     DOWN_LEFT_PRED,
     DOWN_RIGHT_PRED,
+#if USING_INTRA_5_9
+    INTRA_BILINEAR,
+    INTRA_PLANE,
+    INTRA_XY16,
+    INTRA_XY20,
+#endif
     IntraPredModeNum
 };
 

@@ -1,5 +1,6 @@
 #include "intraPrediction.h"
 #include "assert.h"
+#include "intra_add.h"
 
 void xPrepareIntraPattern( ImgParams *img, Macroblock *currMB, pel_t *pedge, int img_x, int img_y, int bsize, bool *bAboveAvail, bool *bLeftAvail )
 {
@@ -437,6 +438,26 @@ void intra_pred_luma( uchar_t *pSrc, pel_t *pDst, int i_dst, int predmode, int u
             assert( bLeftAvail && bAboveAvail );
             g_funs_handle.intra_pred_downleft( pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth );
             break;
+#if USING_INTRA_5_9
+        case INTRA_BILINEAR:// 5 pbilinear
+            assert(bLeftAvail && bAboveAvail);
+            xPredIntraPlaneAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
+            break;
+        case INTRA_PLANE:// 6 down-right
+            assert(bLeftAvail && bAboveAvail);
+            xPredIntraBiAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
+            break;
+
+        case INTRA_XY16:// 7 avs2 실똑16
+            assert(bLeftAvail && bAboveAvail);
+            intra_pred_ang_xy_16_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
+            break;
+
+        case INTRA_XY20:// 8 avs2 실똑20
+            assert(bLeftAvail && bAboveAvail);
+            intra_pred_ang_xy_20_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
+            break;
+#endif
     }
 }
 
@@ -472,4 +493,8 @@ void com_funs_init_intra_pred()
 
     g_funs_handle.intra_pred_chroma_dc    = xPredIntraChromaDC;
     g_funs_handle.intra_pred_chroma_plane = xPredIntraChromaPlane;
+
+#if USING_INTRA_5_9
+    intra_init();
+#endif
 }
