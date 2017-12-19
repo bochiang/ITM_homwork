@@ -400,7 +400,11 @@ int  writeIntraPredMode_AEC( CSobj *cs_aec, int val )
             ctx=3;
         }
     }
+#if USING_INTRA_5_9
+    if(value<8)
+#else
     if( value<4 )
+#endif
     {
         biari_encode_symbol( eep_dp, 1, pCTX+ctx );
     }
