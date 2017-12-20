@@ -188,42 +188,26 @@ void xPredIntraBiAdi(uchar_t *pSrc, pel_t *pDst, int i_dst, int iWidth, int iHei
 
 }
 
-void intra_pred_ang_xy_16_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy)
+/* ---------------------------------------------------------------------------
+*/
+void intra_pred_ang_30_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy)
 {
-    pel_t first_line[2 * (64 + 32)];
-    int line_size = bsx + (bsy >> 1) - 1;
-    int left_size = line_size - bsx;
-    int aligned_line_size = ((line_size + 15) >> 4) << 4;
-    int i_dst2 = i_dst << 1;
-    pel_t *pfirst[2];
+    pel_t first_line[64 + 64];
+    int line_size = bsx + bsy - 1;
     int i;
 
-    pfirst[0] = first_line;
-    pfirst[1] = first_line + aligned_line_size;
-
-    src -= bsy - 2;
-    for (i = 0; i < left_size; i++, src += 2) {
-        pfirst[0][i] = (pel_t)((src[0] + (src[1] << 1) + src[2] + 2) >> 2);
-        pfirst[1][i] = (pel_t)((src[-1] + (src[0] << 1) + src[1] + 2) >> 2);
+    src -= 2;
+    for (i = 0; i < line_size; i++, src--) {
+        first_line[i] = (pel_t)((src[-1] + (src[0] << 1) + src[1] + 2) >> 2);
     }
 
-    for (; i < line_size; i++, src++) {
-        pfirst[0][i] = (pel_t)((src[-1] + (src[0] + src[1]) * 3 + src[2] + 4) >> 3);
-        pfirst[1][i] = (pel_t)((src[-1] + (src[0] << 1) + src[1] + 2) >> 2);
-    }
-
-    pfirst[0] += left_size;
-    pfirst[1] += left_size;
-
-    bsy >>= 1;
     for (i = 0; i < bsy; i++) {
-        memcpy(dst, pfirst[0] - i, bsx * sizeof(pel_t));
-        memcpy(dst + i_dst, pfirst[1] - i, bsx * sizeof(pel_t));
-        dst += i_dst2;
+        memcpy(dst, first_line + i, bsx * sizeof(pel_t));
+        dst += i_dst;
     }
 }
 
-void intra_pred_ang_xy_20_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy)
+void intra_pred_ang_20_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy)
 {
     pel_t first_line[64 + 128];
     int left_size = ((bsy - 1) << 1) + 1;

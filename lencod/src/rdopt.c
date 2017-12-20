@@ -133,8 +133,8 @@ int EncodeIntraLumaBlk( Macroblock *currMB, CSobj *cs_aec, int b8, int b4, int *
 #if USING_INTRA_5_9
         pred_flag[INTRA_BILINEAR] = 0;
         pred_flag[INTRA_PLANE] = 0;
-        pred_flag[INTRA_XY16] = 0;
         pred_flag[INTRA_XY20] = 0;
+        pred_flag[INTRA_XY30] = 0;
 #endif
     }
 

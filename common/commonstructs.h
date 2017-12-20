@@ -139,8 +139,8 @@ enum IntraPredModeLuma
 #if USING_INTRA_5_9
     INTRA_BILINEAR,
     INTRA_PLANE,
-    INTRA_XY16,
     INTRA_XY20,
+    INTRA_XY30,
 #endif
     IntraPredModeNum
 };

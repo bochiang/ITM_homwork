@@ -440,22 +440,22 @@ void intra_pred_luma( uchar_t *pSrc, pel_t *pDst, int i_dst, int predmode, int u
             break;
 #if USING_INTRA_5_9
         case INTRA_BILINEAR:// 5 pbilinear
-            assert(bLeftAvail && bAboveAvail);
-            xPredIntraPlaneAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
+            assert(bLeftAvail && bAboveAvail); 
+            xPredIntraBiAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
             break;
         case INTRA_PLANE:// 6 down-right
             assert(bLeftAvail && bAboveAvail);
-            xPredIntraBiAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
+            xPredIntraPlaneAdi(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth, 8);
             break;
 
-        case INTRA_XY16:// 7 avs2 角度16
+        case INTRA_XY20:// 7 avs2 角度20
             assert(bLeftAvail && bAboveAvail);
-            intra_pred_ang_xy_16_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
+            intra_pred_ang_20_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
             break;
 
-        case INTRA_XY20:// 8 avs2 角度20
+        case INTRA_XY30:// 8 avs2 角度30
             assert(bLeftAvail && bAboveAvail);
-            intra_pred_ang_xy_20_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
+            intra_pred_ang_30_c(pSrc, pDst, i_dst, uhBlkWidth, uhBlkWidth);
             break;
 #endif
     }

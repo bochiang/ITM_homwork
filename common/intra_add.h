@@ -19,8 +19,8 @@ int  g_log2size[MAX_CU_SIZE + 1];
 
 void xPredIntraPlaneAdi(uchar_t *pSrc, pel_t *pDst, int i_dst, int iWidth, int iHeight, int sample_bit_depth);
 void xPredIntraBiAdi(uchar_t *pSrc, pel_t *pDst, int i_dst, int iWidth, int iHeight, int sample_bit_depth);
-void intra_pred_ang_xy_16_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy);
-void intra_pred_ang_xy_20_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy);
+void intra_pred_ang_30_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy);
+void intra_pred_ang_20_c(pel_t *src, pel_t *dst, int i_dst, int bsx, int bsy);
 void intra_init();
 
 #endif
